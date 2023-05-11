@@ -5,24 +5,38 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/joho/godotenv"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	rabbit_mq_host := os.Getenv("RABBIT_MQ_HOST")
+	rabbit_mq_port := os.Getenv("RABBIT_MQ_PORT")
+	rabbit_mq_auth_username := os.Getenv("RABBIT_MQ_AUTH_USERNAME")
+	rabbit_mq_auth_password := os.Getenv("RABBIT_MQ_AUTH_PASSWORD")
 
 	rabbitMqDsnUrl := url.URL{
 		Scheme: "amqp",
-		Host:   "localhost:5672",
-		User:   url.UserPassword("guest", "guest"),
+		Host:   rabbit_mq_host + ":" + rabbit_mq_port,
+		User:   url.UserPassword(rabbit_mq_auth_username, rabbit_mq_auth_password),
 	}
+	color.Cyan("Dialing rabbit mq connection to : %s", rabbitMqDsnUrl.String())
+
 	rabiitConnection, err := amqp.Dial(rabbitMqDsnUrl.String())
 	if err != nil {
 		log.Panicf("Failed to connect to RabbitMQ: %s", err)
 	}
+
+	color.Cyan("rabbit mq connected ! \n\n\n")
 	defer rabiitConnection.Close()
 
 	rabbitChannel, err := rabiitConnection.Channel()

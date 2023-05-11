@@ -1,9 +1,10 @@
-module github.com/rizlantamima/go-rabbit
+module github.com/rizlantamima/go-rabbit/producer
 
 go 1.19
 
 require (
 	github.com/fatih/color v1.15.0
+	github.com/joho/godotenv v1.5.1
 	github.com/rabbitmq/amqp091-go v1.8.1
 )
 
