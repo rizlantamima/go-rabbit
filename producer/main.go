@@ -33,7 +33,7 @@ func main() {
 
 	rabiitConnection, err := amqp.Dial(rabbitMqDsnUrl.String())
 	if err != nil {
-		log.Panicf("Failed to connect to RabbitMQ: %s", err)
+		log.Fatalf("Failed to connect to RabbitMQ: %s", err)
 	}
 
 	color.Cyan("rabbit mq connected ! \n\n\n")
@@ -41,14 +41,14 @@ func main() {
 
 	rabbitChannel, err := rabiitConnection.Channel()
 	if err != nil {
-		log.Panicf("Failed to open a channel %s", err)
+		log.Fatalf("Failed to open a channel %s", err)
 	}
 	defer rabbitChannel.Close()
 
 	q, err := getQueue(rabbitChannel)
 
 	if err != nil {
-		log.Panicf("Failed to declare a queue : %s", err)
+		log.Fatalf("Failed to declare a queue : %s", err)
 	}
 
 	timeOurPublish := 1 * time.Second
@@ -66,7 +66,7 @@ func main() {
 	)
 
 	if err != nil {
-		log.Panicf("Failed to publish a message : %s", err)
+		log.Fatalf("Failed to publish a message : %s", err)
 	}
 	log.Printf(" [x] Sent %s\n", string(msg.Body))
 

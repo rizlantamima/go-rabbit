@@ -32,22 +32,22 @@ func main() {
 	}
 	conn, err := amqp.Dial(rabbitMqDsnUrl.String())
 	if err != nil {
-		log.Panicf("Failed to connect to RabbitMQ: %s", err)
+		log.Fatalf("Failed to connect to RabbitMQ: %s", err)
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Panicf("Failed to open a channel : %s", err)
+		log.Fatalf("Failed to open a channel : %s", err)
 	}
 	defer ch.Close()
 	queueList, err := getList()
 	if err != nil {
-		log.Panicf("Failed to get the queue lists : %s", err)
+		log.Fatalf("Failed to get the queue lists : %s", err)
 	}
 
 	if len(queueList) == 0 {
-		log.Panicf("Sorry, there's no available queue, on your rabbit mq server")
+		log.Fatalf("Sorry, there's no available queue, on your rabbit mq server")
 	}
 
 	color.Cyan("Which queue you want to listen ? 1-%v : ", len(queueList))
@@ -59,7 +59,7 @@ func main() {
 	var confirmationQuestion int
 	fmt.Scan(&confirmationQuestion)
 	if confirmationQuestion == 0 || confirmationQuestion > len(queueList) {
-		log.Panicf("You are inputting wrong number, please input between 1-%v", len(queueList))
+		log.Fatalf("You are inputting wrong number, please input between 1-%v", len(queueList))
 	}
 	queueChoosen := queueList[confirmationQuestion-1]
 
@@ -75,7 +75,7 @@ func main() {
 		nil,               // args
 	)
 	if err != nil {
-		log.Panicf("Failed to register a consumer : %s", err)
+		log.Fatalf("Failed to register a consumer : %s", err)
 	}
 
 	var forever chan struct{}
